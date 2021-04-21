@@ -5,7 +5,6 @@ $(document).ready(function () {
 
 });
 
-var foo = { name: "Bo", age: 5 };
 
 function getIp() {
 

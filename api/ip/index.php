@@ -1,5 +1,5 @@
 <?php 
-
+// IP-API
 $result = [
     'ip' => $_SERVER['REMOTE_ADDR']
 ]; 
