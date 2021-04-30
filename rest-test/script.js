@@ -1,11 +1,12 @@
 // rest-test js
 
-var localApiKey;
-
 $(function() {
     
     $(document).on("click", "#login", function() {
 
+        /**
+         * Inloggnings-request, vi skickar användarnamn och lösenord och får en API Key i utbyte.
+         */
         $.ajax({
             type: "POST",
             url: "https://cgi.arcada.fi/~welandfr/demo/wdbcms21-exempel/api/auth/",
@@ -15,26 +16,25 @@ $(function() {
             }),
             success: function(data) {
                 console.log(data);
+                // Vi sparar apikey i localstorage
                 localStorage.setItem('apikey', data.api_key);
-                localApiKey = data.api_key;
-            },
-            error: function() {
-
             }
         });
     })
 
     $(document).on("click", "#get", function() {
 
+        /** 
+         * GET-request för att få våra personliga hotellbokningar via vår API Key.
+         * Vi skickar API Keyn som en custom header 'apikey'
+         */
         $.ajax({
             type: "GET",
             url: "https://cgi.arcada.fi/~welandfr/demo/wdbcms21-exempel/api/mybookings/",
-            headers: { 'apikey': localStorage.getItem('apikey') },
+            headers: { 'apikey': localStorage.getItem('apikey') }, 
             success: function(data) {
-                console.log(data);
-            },
-            error: function() {
-
+                // Dumpa ut hotellbokningarna i loggen
+                console.log(data.result);
             }
         });
     })

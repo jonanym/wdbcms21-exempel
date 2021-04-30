@@ -6,18 +6,19 @@ if ($mysqli->connect_error) die("MySQL Connect ERROR:" . $mysqli->connect_error)
 
 header('content-type: application/json');
 
+// Spara alla request headers i en variabel, vi intresserar oss i  det här fallet
+// speciellt för $request_headers["apikey"]
 $request_headers = apache_request_headers();
 
 // Spara URL-variablerna ur query string i array $request_vars
 parse_str($_SERVER['QUERY_STRING'], $request_vars);
 
-$response = [ 
-    //"headers" => $request_headers
-];
+$response = [];
 
+// Om metoden är GET och apikey finns
 if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($request_headers["apikey"])) {
 
-
+    // Använd API Keyn föra att få användarens bokningar
     $stmt = $mysqli->prepare("SELECT
             g.firstname,
             g.lastname,
@@ -28,11 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($request_headers["apikey"])) {
             ON g.guestid = b.guest
         WHERE
             g.api_key =  ?");
-            
-    if (!$stmt) {
-        die("SQL ERROR: " . $mysqli->error);
-    }
 
+    if (!$stmt) die("SQL ERROR: " . $mysqli->error);
+
+    // Lägg till $request_headers["apikey"] till vår prepared statement
     $stmt->bind_param("s", $request_headers["apikey"]);
 
     $stmt->execute();

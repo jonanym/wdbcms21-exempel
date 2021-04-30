@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"
         $response["api_key"] = $apiKey;
         $response["message"] = "Login OK";  
     }
-
 }
 
 // Funktion för att kolla lösenord OBS: "Passw0rd"
