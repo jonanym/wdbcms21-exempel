@@ -30,17 +30,46 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Hämta detaljer för ett enskilt objekt (t.ex. produkt)
     $response["result"] = "Success GET id = " . $request_vars["id"];
 
+    $stmt = $mysqli->prepare("SELECT
+        g.firstname,
+        g.lastname,
+        b.hotelroom,
+        b.datefrom
+    FROM
+        hotel_guest g
+    INNER JOIN hotel_booking b ON
+        g.guestid = b.guest
+    WHERE g.guestid = ?
+    ORDER BY b.datefrom DESC");
+
+    if (!$stmt) {
+        die("SQL ERROR: " . $mysqli->error);
+    }
+
+    $stmt->bind_param("s", $request_vars["id"]); 
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $rows = [];
+    while ($row = $result->fetch_assoc()) {
+        $rows[] = $row;
+    }    
+
+    $response["result"] = $rows;
+
 } elseif ($_SERVER['REQUEST_METHOD'] == "GET" && !isset($request_vars["id"])) {
 
 
     $stmt = $mysqli->prepare("SELECT
-        guestid,
-        firstName,
-        lastname,
-        address,
-        city
+        g.guestid,
+        g.firstName,
+        g.lastname,
+        -- g.address,
+        -- g.city,
+        (select count(*) from hotel_booking where guest = g.guestid) as bookings
     FROM
-        hotel_guest");
+        hotel_guest g");
 
     if (!$stmt) {
         die("SQL ERROR: " . $mysqli->error);

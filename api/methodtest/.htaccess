@@ -3,5 +3,5 @@ RewriteEngine On
 
 #            /123  =>  /?id=123
 
-RewriteRule ^([0-9]+)$ ?id=$1  [QSA,L]
+RewriteRule ^([0-9A-Z]+)$ ?id=$1  [QSA,L]
 
