@@ -26,8 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $response["result"] = "Success POST";
 
+/**
+ *  GET methodtest/ID (specifik id)
+ */
 } elseif ($_SERVER['REQUEST_METHOD'] == "GET" && isset($request_vars["id"])) {
-    // Hämta detaljer för ett enskilt objekt (t.ex. produkt)
+
     $response["result"] = "Success GET id = " . $request_vars["id"];
 
     $stmt = $mysqli->prepare("SELECT
@@ -58,16 +61,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $response["result"] = $rows;
 
-} elseif ($_SERVER['REQUEST_METHOD'] == "GET" && !isset($request_vars["id"])) {
 
+/**
+ *  GET methodtest/ (returnera alla)
+ */
+} elseif ($_SERVER['REQUEST_METHOD'] == "GET" && !isset($request_vars["id"])) {
 
     $stmt = $mysqli->prepare("SELECT
         g.guestid,
         g.firstName,
         g.lastname,
-        -- g.address,
-        -- g.city,
-        (select count(*) from hotel_booking where guest = g.guestid) as bookings
+        -- Subquery för att räkna varje gästs bokningar:
+        (SELECT COUNT(*) FROM hotel_booking 
+            WHERE guest = g.guestid) as bookings
     FROM
         hotel_guest g");
 

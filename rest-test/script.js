@@ -5,8 +5,12 @@ $(function() {
 
 
     $(document).on("click", ".guest", function() {
-        getBookings($(this).attr("id"));
-        //console.log($(this).attr("id"));
+
+        // $(this) är ett jQuery-objekt för det element vi klickat på
+        // attr() är en metod för att hämta ett html-attribut
+        var guestId = $(this).attr("id");
+        
+        getBookings(guestId);
     });
 
     $.ajax({
@@ -32,7 +36,7 @@ $(function() {
 });
 
 function getBookings(guestid) {
-    // 
+    // Här kan vi köra en GET-request för en specifik guestid
     console.log(guestid);
 }
 
