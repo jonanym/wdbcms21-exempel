@@ -22,9 +22,58 @@ $response = [
 
 ];
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
+
+    /* INSERT INTO hotel_booking (
+    datefrom,
+    dateto,
+    guest,
+    hotelroom,
+    addinfo
+ ) VALUES (
+ 	'2020-01-01',
+    '2021-01-01',
+    'C0001',
+     404,
+     'foo'
+ )*/
+
+    $stmt = $mysqli->prepare("INSERT 
+        INTO hotel_booking (
+            datefrom,
+            dateto,
+            guest,
+            hotelroom,
+            addinfo
+        ) VALUES (
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )");
+
+    if (!$stmt) {
+        die("SQL ERROR: " . $mysqli->error);
+    }
+
+    $datefrom = $request_body->datefrom;
+    $dateto = $request_body->dateto;
+    $guest = strip_tags($request_vars["id"]);
+    $room = $request_body->room;
+    $comment = strip_tags($request_body->comment);
+
+    $stmt->bind_param("sssis", 
+        $datefrom,
+        $dateto,
+        $guest,
+        $room,
+        $comment
+    );
+    $stmt->execute();
 
     $response["result"] = "Success POST";
+    $response["booking_saved"] = true;
 
 /**
  *  GET methodtest/ID (specifik id)

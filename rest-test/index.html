@@ -11,6 +11,19 @@
     <title>RestTest</title>
 </head>
 <body>
-    <ul id="out"></ul>
+    <select id="out">
+        <option>-- Välj gäst</option>
+    </select>
+    <div id="#bookingform">
+        Ny bokning:
+        <input type="text" id="room" placeholder="Rum">
+        <input type="text" id="startdate" placeholder="Ankomstdatum">
+        <input type="text" id="enddate" placeholder="Hemfärd">
+        <input type="text" id="comment" placeholder="Specialönskemål">
+        <button id="save">Boka</button>
+    </div>
+
+    <hr>
+    <div id="bookings"></div>
 </body>
 </html>
