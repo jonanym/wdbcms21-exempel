@@ -1,12 +1,12 @@
-// rest-test js
 
+/**
+ * onLoad-funktion, körs när sedan är färdigt laddad.
+ * Event-handlers och sådant som är beroende av DOM-element är bra att ha i här
+ */
 $(function() {
     console.log('jQuery works!');
 
     $(document).on("change", "#out", function() {
-
-        // $(this) är ett jQuery-objekt för det element vi klickat på
-        // attr() är en metod för att hämta ett html-attribut
         var guestId = $(this).val(); // .val() => värdet på form-field
         
         getBookings(guestId);
@@ -14,16 +14,21 @@ $(function() {
 
     $(document).on('click', '#save', function() {
 
-        var guestid = $("#out").val();
+        var guestId = $("#out").val();
 
-        createBooking(guestid);
+        createBooking(guestId);
 
     });
 
-    getGuests();
-});
+    getGuests(); // Hämta alla gäster
+}); 
 
+
+/** 
+ * Övriga funktioner kan vara utanför onLoad-funktionen:
+ * */
 function getBookings(guestid) {
+    
     // Här kan vi köra en GET-request för en specifik guestid
     console.log(guestid);
     $.ajax({
@@ -58,19 +63,23 @@ function getGuests() {
                         + ' (' + value.bookings + ' bookings)'
                         + '</option>');
             });
-            //console.log(data);
+
         }
     });
 }
 
 function createBooking(guestid) {
     
-    $("#save_status").html('');
+    $("#save_status").html(''); // Töm förra save-status
 
+    /**
+     * POST-request med vår request body (payload) som json 
+     * observera guestid i slutet av urlen
+     */
     $.ajax({
         type: "POST",
         url: "https://cgi.arcada.fi/~welandfr/demo/wdbcms21-exempel/api/methodtest/" + guestid,
-        data: JSON.stringify({ 
+        data: JSON.stringify({  
             room: $("#room").val(), 
             datefrom: $("#startdate").val(), 
             dateto: $("#enddate").val(), 
@@ -88,5 +97,3 @@ function createBooking(guestid) {
     }); 
 }
 
-
-console.log('js works');

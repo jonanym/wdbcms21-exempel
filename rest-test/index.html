@@ -12,16 +12,17 @@
 </head>
 <body>
     <select id="out">
-        <option>-- Välj gäst</option>
+        <option>-- Välj gäst</option> 
     </select>
     <div id="#bookingform">
         Ny bokning:
         <input type="text" id="room" placeholder="Rum">
-        <input type="text" id="startdate" placeholder="Ankomstdatum">
-        <input type="text" id="enddate" placeholder="Hemfärd">
+        <input type="text" id="startdate" placeholder="Ankomst YYYY-MM-DD">
+        <input type="text" id="enddate" placeholder="Hemfärd YYYY-MM-DD">
         <input type="text" id="comment" placeholder="Specialönskemål">
         <button id="save">Boka</button>
     </div>
+    <div id="save_status"></div>
 
     <hr>
     <div id="bookings"></div>

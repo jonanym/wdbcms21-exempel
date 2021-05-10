@@ -22,21 +22,10 @@ $response = [
 
 ];
 
+/**
+ * POST methodtest/ID (ny bokning för en specifik gäst)
+ */
 if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
-
-    /* INSERT INTO hotel_booking (
-    datefrom,
-    dateto,
-    guest,
-    hotelroom,
-    addinfo
- ) VALUES (
- 	'2020-01-01',
-    '2021-01-01',
-    'C0001',
-     404,
-     'foo'
- )*/
 
     $stmt = $mysqli->prepare("INSERT 
         INTO hotel_booking (
@@ -57,9 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
         die("SQL ERROR: " . $mysqli->error);
     }
 
+    // Använd strip_tags() på sådana textfält som ska visas på en webbsida för att förhindra cross site scripting (XSS). htmlentities() är en annan bra metod som håller kvar html men byter ut < och > till &lt; och &gt;
     $datefrom = $request_body->datefrom;
     $dateto = $request_body->dateto;
-    $guest = strip_tags($request_vars["id"]);
+    $guest = strip_tags($request_vars["id"]); 
     $room = $request_body->room;
     $comment = strip_tags($request_body->comment);
 
