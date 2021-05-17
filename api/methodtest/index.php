@@ -62,8 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
     );
     $stmt->execute();
 
+    $newId = $stmt->insert_id;
+
     $response["result"] = "Success POST";
     $response["booking_saved"] = true;
+    $response["new_id"] = $newId;
 
 /**
  *  GET methodtest/ID (specifik id)
@@ -75,14 +78,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
     $stmt = $mysqli->prepare("SELECT
         g.firstname,
         g.lastname,
+        b.bookingid,
         b.hotelroom,
-        b.datefrom
+        b.addinfo,
+        b.datefrom,
+        b.dateto 
     FROM
         hotel_guest g
     INNER JOIN hotel_booking b ON
         g.guestid = b.guest
     WHERE g.guestid = ?
-    ORDER BY b.datefrom DESC");
+      -- and b.bookingid not in (194,195,189)
+    ORDER BY b.bookingid ASC");
 
     if (!$stmt) {
         die("SQL ERROR: " . $mysqli->error);
@@ -99,6 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
     }    
 
     $response["result"] = $rows;
+
+    
 
 
 /**
@@ -128,9 +137,72 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($request_vars["id"])) {
     }    
 
     $response["result"] = $rows;
+
+
+/**
+ *  PUT methodtest/?bookingId=[id] (uppdatera bokning)
+ */
+} elseif ($_SERVER['REQUEST_METHOD'] == "PUT" && isset($request_vars["bookingId"])) {
+
+    $response["result"] = "PUT works!";
+
+    $stmt = $mysqli->prepare("UPDATE hotel_booking SET
+            datefrom = ?,
+            dateto = ?,
+            hotelroom = ?,
+            addinfo  = ?
+        WHERE bookingid = ?");
+
+    if (!$stmt) {
+        die("SQL ERROR: " . $mysqli->error);
+    }
+
+    $stmt->bind_param("ssisi", 
+        $datefrom,
+        $dateto,
+        $room,
+        $comment,
+        $bookingid
+    );
+
+    $datefrom = $request_body->datefrom;
+    $dateto = $request_body->dateto;
+    $room = $request_body->room;
+    $comment = strip_tags($request_body->comment);
+    $bookingid = $request_vars["bookingId"];
+
+    $stmt->execute();
+
+    $response["result"] = "Success PUT";
+    $response["booking_saved"] = true;
+
+
+/**
+ *  DELETE methodtest/?bookingId=[id] (uppdatera bokning)
+ */
+} elseif ($_SERVER['REQUEST_METHOD'] == "DELETE" && isset($request_vars["bookingId"])) {
+
+    $stmt = $mysqli->prepare("DELETE FROM 
+            hotel_booking 
+        WHERE bookingid = ?");
+
+    if (!$stmt) {
+        die("SQL ERROR: " . $mysqli->error);
+    }
+
+    $stmt->bind_param("i", $bookingid);
+
+    $bookingid = $request_vars["bookingId"];
+
+    $stmt->execute();
+
+    $response["result"] = "Success DELETED booking " . $bookingid;
+
 }
 
-echo json_encode($response);
+
+echo json_encode($response, JSON_INVALID_UTF8_SUBSTITUTE);
+// JSON_INVALID_UTF8_SUBSTITUTE fixar så att json_encode inte failar även om det skulle finnas felaktiga tecken i strängen.
 
 
 
